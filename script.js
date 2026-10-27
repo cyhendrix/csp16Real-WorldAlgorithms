@@ -226,6 +226,7 @@ function showFinish(){
  lessonView.innerHTML='';finishCard.classList.remove('hidden');
  const correct=questionCorrect.reduce((n,a)=>n+a.filter(Boolean).length,0),possible=lessons.reduce((n,l)=>n+l.questions.length,0);
  document.getElementById('finalScore').textContent=`Score: ${gradePercent()}% — Multiple-choice: ${correct} / ${possible} correct; coding: ${codingPassed.filter(Boolean).length} / ${lessons.length} complete.`;
+ document.getElementById('resultsMessage').textContent=gradePercent()===100?'Excellent work! All questions and coding activities are correct.':'Review your lesson scores below.';
  document.getElementById('resultsBreakdown').innerHTML=lessons.map((l,i)=>`<div class="result-row"><strong>Lesson ${i+1}:</strong> ${questionCorrect[i].filter(Boolean).length} / ${l.questions.length} questions correct; coding ${codingPassed[i]?'complete':'incomplete'}</div>`).join('');
  refreshSubmission();
  progressText.textContent='Results';progressBar.style.width='100%';
@@ -257,5 +258,6 @@ document.getElementById('submitResultsBtn').addEventListener('click',()=>{
  form.submit();
  setTimeout(()=>{if(!finished){button.disabled=false;status.textContent='Submission could not be confirmed. Check the grade tracker before trying again.';}},12000);
 });
+document.getElementById('backToLabBtn').addEventListener('click',()=>{currentLesson=0;render();window.scrollTo({top:0,behavior:'smooth'});});
 document.getElementById('resetBtn').addEventListener('click',()=>{if(!confirm('Reset all answers and coding work? This cannot be undone.'))return;currentLesson=0;answers.forEach(a=>a.fill(null));questionCorrect.forEach(a=>a.fill(false));questionAttempts.forEach(a=>a.fill(0));codingChecked.fill(false);codingPassed.fill(false);codeEntries.fill('');optionOrders=makeOptionOrders();localStorage.removeItem(chapter16ProgressKey);localStorage.removeItem(CHAPTER16_SENT_KEY);localStorage.removeItem(chapter16PageKey);render();window.scrollTo({top:0,behavior:'smooth'});});
 render();
