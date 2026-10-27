@@ -231,32 +231,32 @@ function showFinish(){
  refreshSubmission();
  progressText.textContent='Results';progressBar.style.width='100%';
 }
-const CHAPTER16_FORM_URL='https://docs.google.com/forms/d/e/1FAIpQLSf9qAF0Ek04CLXOzReYWO-5YVDfY70LYoWWMLaLyC0bG70YUg/formResponse';
+const GRADE_ENDPOINT='https://script.google.com/a/macros/benhillschools.org/s/AKfycbz9IipEcz2wq8Hbye5zC3pyuXFCW9_4PlutdfW3oRwfKcTW5jMgV3FqxNYVWupvJ8kO/exec';
 const CHAPTER16_SENT_KEY='csp16-grade-submitted';
 function refreshSubmission(){
  const sent=localStorage.getItem(CHAPTER16_SENT_KEY)==='1';
  const button=document.getElementById('submitResultsBtn');
- button.hidden=sent;
- button.disabled=sent||!lessons.every((_,i)=>lessonReady(i));
- document.getElementById('submissionStatus').textContent=sent?'Grade submission was sent. Please verify it appears in your grade tracker.':lessons.every((_,i)=>lessonReady(i))?'All four lessons complete. Submit your grade below.':'Complete every question (correct or two attempts used) and all coding challenges before submitting.';
+ button.hidden=false;
+ button.disabled=!allLessonsReady();
+ button.textContent=sent?'Send Results Again':'Submit Results';
+ document.getElementById('submissionStatus').textContent=sent?'A submission request was sent previously. Check your grade checker to confirm recording; you may send again if needed.':allLessonsReady()?'All three lessons complete. Submit your grade below.':'Complete every question (correct or two attempts used) and all coding challenges before submitting.';
 }
-document.getElementById('submitResultsBtn').addEventListener('click',()=>{
+document.getElementById('submitResultsBtn').addEventListener('click',async()=>{
  const status=document.getElementById('submissionStatus');
- if(!lessons.every((_,i)=>lessonReady(i))){status.textContent='Finish all questions within two attempts and complete all coding challenges before submitting.';return;}
+ if(!allLessonsReady()){status.textContent='Complete all three lessons before submitting.';return;}
  let student=null;
  try{student=JSON.parse(localStorage.getItem('csp16-student-info')||'null')}catch(e){}
  if(!student?.first||!student?.last||!student?.period){status.textContent='Student information is missing. Please complete the student information form.';return;}
  const button=document.getElementById('submitResultsBtn');
- button.disabled=true;status.textContent='Sending grade submission…';
- const frame=document.createElement('iframe');frame.name='csp16GradeFrame';frame.style.display='none';document.body.appendChild(frame);
- const form=document.createElement('form');form.method='POST';form.action=CHAPTER16_FORM_URL;form.target=frame.name;form.style.display='none';
- const data={'entry.2089413779':student.last+', '+student.first,'entry.890934651':student.period,'entry.646173439':'Chapter 16 | Real-World Algorithms','entry.962158861':String(gradePercent())};
- Object.entries(data).forEach(([name,value])=>{const field=document.createElement('input');field.name=name;field.value=value;form.appendChild(field)});
- document.body.appendChild(form);
- let finished=false;
- frame.addEventListener('load',()=>{if(finished)return;finished=true;localStorage.setItem(CHAPTER16_SENT_KEY,'1');form.remove();frame.remove();refreshSubmission();});
- form.submit();
- setTimeout(()=>{if(!finished){button.disabled=false;status.textContent='Submission could not be confirmed. Check the grade tracker before trying again.';}},12000);
+ button.disabled=true;status.textContent='Sending Chapter 16 score…';
+ const payload={name:student.last+', '+student.first,period:student.period,chapter:'Chapter 16 | Real-World Algorithms',score:gradePercent()};
+ try{
+  await fetch(GRADE_ENDPOINT,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});
+  localStorage.setItem(CHAPTER16_SENT_KEY,'1');
+  status.textContent='Submission request sent. Please check your Grade Checker or spreadsheet to confirm recording; this message does not confirm acceptance.';
+  button.textContent='Send Results Again';
+ }catch(e){status.textContent='Unable to send your score. Check your internet connection and try again.';}
+ button.disabled=false;
 });
 document.getElementById('backToLabBtn').addEventListener('click',()=>{currentLesson=0;render();window.scrollTo({top:0,behavior:'smooth'});});
 document.getElementById('resetBtn').addEventListener('click',()=>{if(!confirm('Reset all answers and coding work? This cannot be undone.'))return;currentLesson=0;answers.forEach(a=>a.fill(null));questionCorrect.forEach(a=>a.fill(false));questionAttempts.forEach(a=>a.fill(0));codingChecked.fill(false);codingPassed.fill(false);codeEntries.fill('');optionOrders=makeOptionOrders();localStorage.removeItem(chapter16ProgressKey);localStorage.removeItem(CHAPTER16_SENT_KEY);localStorage.removeItem(chapter16PageKey);render();window.scrollTo({top:0,behavior:'smooth'});});
