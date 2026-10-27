@@ -258,21 +258,6 @@ document.getElementById('submitResultsBtn').addEventListener('click',async()=>{
  }catch(e){status.textContent='Unable to send your score. Check your internet connection and try again.';}
  button.disabled=false;
 });
-document.getElementById('temporaryResubmitBtn').addEventListener('click',async()=>{
- const status=document.getElementById('submissionStatus');
- let student=null;
- try{student=JSON.parse(localStorage.getItem('csp16-student-info')||'null')}catch(e){}
- if(!student?.first||!student?.last||!student?.period){status.textContent='Student information missing. Enter your name and class period on the opening screen.';return;}
- const btn=document.getElementById('temporaryResubmitBtn');
- btn.disabled=true;btn.textContent='Resubmitting…';
- status.textContent='Sending your saved Chapter 16 score…';
- const payload={name:student.last+', '+student.first,period:student.period,chapter:'Chapter 16 | Real-World Algorithms',score:gradePercent()};
- try{
-  await fetch(GRADE_ENDPOINT,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});
-  status.textContent='Resubmission request sent for '+payload.score+'%. Check the spreadsheet to confirm it was recorded.';
- }catch(e){status.textContent='Unable to send score: '+e.message;}
- btn.disabled=false;btn.textContent='Temporary: Resubmit My Score';
-});
 document.getElementById('backToLabBtn').addEventListener('click',()=>{currentLesson=0;render();window.scrollTo({top:0,behavior:'smooth'});});
 document.getElementById('resetBtn').addEventListener('click',()=>{if(!confirm('Reset all answers and coding work? This cannot be undone.'))return;currentLesson=0;answers.forEach(a=>a.fill(null));questionCorrect.forEach(a=>a.fill(false));questionAttempts.forEach(a=>a.fill(0));codingChecked.fill(false);codingPassed.fill(false);codeEntries.fill('');optionOrders=makeOptionOrders();localStorage.removeItem(chapter16ProgressKey);localStorage.removeItem(CHAPTER16_SENT_KEY);localStorage.removeItem(chapter16PageKey);render();window.scrollTo({top:0,behavior:'smooth'});});
 render();
