@@ -13,3 +13,5 @@
 @media(max-width:650px){.student-fields{grid-template-columns:1fr}}
 
 [hidden]{display:none!important}
+
+#resultsMessage{font-size:1rem;color:#35475d;margin:12px auto}#backToLabBtn{margin-right:8px}#resultsBreakdown .result-row{padding:12px;border-radius:8px;background:#fff;margin:6px 0;text-align:left}
