@@ -22,7 +22,7 @@
   <section id="studentScreen" class="student-screen"><div class="student-card"><h2>✦ Student Information</h2><div class="student-inside"><p>Enter your first name, last name, and class period. Then click <strong>Begin Practice Lab</strong>.</p><form id="studentForm"><div class="student-fields"><div><label for="studentFirst">First Name</label><input id="studentFirst" placeholder="First Name" required autocomplete="given-name"></div><div><label for="studentLast">Last Name</label><input id="studentLast" placeholder="Last Name" required autocomplete="family-name"></div><div><label for="studentPeriod">Class Period</label><select id="studentPeriod" required><option value="">Choose a class period</option><option>1st Block</option><option>2nd Block</option><option>3rd Block</option><option>4th Block</option></select></div></div><button class="begin-button" type="submit">Begin Practice Lab</button><p id="studentError" role="alert"></p></form><p class="student-note">Complete each lesson and check your answers as you go.</p></div></div></section><main id="labContent" hidden>
     <section class="intro card">
       <h2>How this practice works</h2>
-      <p>Work through one lesson at a time. Answer the questions, complete the short Python coding scenario, then click <b>Check Lesson Results</b>. Review anything you missed before clicking <b>Next Lesson</b>.</p>
+      <p>Work through one lesson at a time. Answer the questions, complete the short Python coding scenario, then click <b>Check My Code</b>. Review anything you missed before clicking <b>Next Lesson</b>.</p>
       <div class="lesson-tabs" id="lessonTabs"></div>
     </section>
 
@@ -30,8 +30,8 @@
 
     <section id="finishCard" class="card finish hidden">
       <h2>Chapter 16 Results</h2>
-      <p>You worked through all three Chapter 16 lessons and three coding challenges.</p>
-      <p class="score-line" id="finalScore"></p><div id="resultsBreakdown"></div><p id="submissionStatus" role="status">Submit your grade after all three lessons; verify your result in the grade checker.</p><button id="submitResultsBtn" class="primary" type="button">Submit Results</button> 
+      <p>You completed all three Chapter 16 lessons and their coding challenges. Review your scores below.</p>
+      <p class="score-line" id="finalScore"></p><p id="resultsMessage"></p><div id="resultsBreakdown"></div><p id="submissionStatus" role="status">Submit your grade after all three lessons; verify your result in the grade checker.</p><button id="backToLabBtn" class="secondary" type="button">Back to Lab</button> <button id="submitResultsBtn" class="primary" type="button">Submit Results</button> 
       <button id="resetBtn" class="secondary">Reset Answers</button>
     </section>
   </main>
