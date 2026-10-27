@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chapter 16 Practice — Real-World Algorithms</title>
+  <link rel="stylesheet" href="style.css?v=16" />
+</head>
+<body>
+  <header class="hero">
+    <div>
+      <p class="eyebrow">COMPUTER SCIENCE FOUNDATIONS</p>
+      <h1>Chapter 16: Real-World Algorithms</h1>
+      <p class="subtitle">Interactive Practice Lab</p>
+    </div>
+    <div class="progress-card" id="labProgress" hidden>
+      <span id="progressText">Lesson 1 of 3</span>
+      <div class="progress-track"><div id="progressBar"></div></div>
+    </div>
+  </header>
+
+  <section id="studentScreen" class="student-screen"><div class="student-card"><h2>✦ Student Information</h2><div class="student-inside"><p>Enter your first name, last name, and class period. Then click <strong>Begin Practice Lab</strong>.</p><form id="studentForm"><div class="student-fields"><div><label for="studentFirst">First Name</label><input id="studentFirst" placeholder="First Name" required autocomplete="given-name"></div><div><label for="studentLast">Last Name</label><input id="studentLast" placeholder="Last Name" required autocomplete="family-name"></div><div><label for="studentPeriod">Class Period</label><select id="studentPeriod" required><option value="">Choose a class period</option><option>1st Block</option><option>2nd Block</option><option>3rd Block</option><option>4th Block</option></select></div></div><button class="begin-button" type="submit">Begin Practice Lab</button><p id="studentError" role="alert"></p></form><p class="student-note">Complete each lesson and check your answers as you go.</p></div></div></section><main id="labContent" hidden>
+    <section class="intro card">
+      <h2>How this practice works</h2>
+      <p>Work through one lesson at a time. Answer the questions, complete the short Python coding scenario, then click <b>Check Lesson Results</b>. Review anything you missed before clicking <b>Next Lesson</b>.</p>
+      <div class="lesson-tabs" id="lessonTabs"></div>
+    </section>
+
+    <section id="lessonView"></section>
+
+    <section id="finishCard" class="card finish hidden">
+      <h2>Chapter 16 Results</h2>
+      <p>You worked through all three Chapter 16 lessons and three coding challenges.</p>
+      <p class="score-line" id="finalScore"></p><div id="resultsBreakdown"></div><p id="submissionStatus" role="status">Submit your grade after all three lessons; verify your result in the grade checker.</p><button id="submitResultsBtn" class="primary" type="button">Submit Results</button> 
+      <button id="resetBtn" class="secondary">Reset Answers</button>
+    </section>
+  </main>
+
+  <script src="script.js?v=16"></script>
+<script>
+(function(){
+const key='csp16-student-info';
+const first=document.getElementById('studentFirst'),last=document.getElementById('studentLast'),period=document.getElementById('studentPeriod');
+try{const v=JSON.parse(localStorage.getItem(key)||'null');if(v){first.value=v.first||'';last.value=v.last||'';period.value=v.period||''}}catch(e){}
+document.getElementById('studentForm').addEventListener('submit',function(e){
+e.preventDefault();const v={first:first.value.trim(),last:last.value.trim(),period:period.value};
+if(!v.first||!v.last||!v.period){document.getElementById('studentError').textContent='Please complete all three fields.';return;}
+localStorage.setItem(key,JSON.stringify(v));
+sessionStorage.setItem('csp16-lab-started','1');
+document.getElementById('studentScreen').hidden=true;
+document.getElementById('labContent').hidden=false;
+document.getElementById('labProgress').hidden=false;
+window.scrollTo(0,0);
+});
+try{
+ const saved=JSON.parse(localStorage.getItem(key)||'null');
+ if(sessionStorage.getItem('csp16-lab-started')==='1'&&saved?.first&&saved?.last&&saved?.period){
+  document.getElementById('studentScreen').hidden=true;
+  document.getElementById('labContent').hidden=false;
+  document.getElementById('labProgress').hidden=false;
+ }
+}catch(e){}
+})();
+</script></body>
+</html>
