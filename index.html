@@ -23,7 +23,7 @@
     <section class="intro card">
       <h2>How this practice works</h2>
       <p>Work through one lesson at a time. Answer the questions, complete the short Python coding scenario, then click <b>Check My Code</b>. Review anything you missed before clicking <b>Next Lesson</b>.</p>
-      <div class="lesson-tabs" id="lessonTabs"></div>
+      <div class="lesson-tabs" id="lessonTabs"></div><p id="labLoadError" role="alert" hidden style="color:#9b2929;font-weight:700"></p>
     </section>
 
     <section id="lessonView"></section>
@@ -36,7 +36,13 @@
     </section>
   </main>
 
-  <script src="script.js?v=20"></script>
+  <script>
+window.addEventListener('error',function(e){
+ const node=document.getElementById('labLoadError');
+ if(node){node.hidden=false;node.textContent='Lesson loading error: '+(e.message||'Script could not load')+' — please send this message to your teacher.';}
+});
+</script>
+<script src="script.js?v=21" onerror="document.getElementById('labLoadError').hidden=false;document.getElementById('labLoadError').textContent='The lesson script failed to download. Check the network or try reloading.';"></script>
 <script>
 (function(){
 const key='csp16-student-info';
