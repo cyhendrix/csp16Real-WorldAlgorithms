@@ -90,7 +90,7 @@ function renderTabs(){
 
 function render(){
  localStorage.setItem(chapter16PageKey,String(currentLesson));
- if(currentLesson===lessons.length&&!allLessonsReady())currentLesson=lessons.findIndex((_,i)=>!lessonReady(i));renderTabs(); if(currentLesson===lessons.length){showFinish();return;} const lesson=lessons[currentLesson];
+ if(currentLesson===lessons.length&&!allLessonsReady())currentLesson=Math.max(0,lessons.findIndex((_,i)=>!lessonReady(i)));if(!Number.isInteger(currentLesson)||currentLesson<0||currentLesson>lessons.length)currentLesson=0;renderTabs(); if(currentLesson===lessons.length){showFinish();return;} const lesson=lessons[currentLesson];
  progressText.textContent=`Lesson ${currentLesson+1} of ${lessons.length}`; progressBar.style.width=`${((currentLesson+1)/lessons.length)*100}%`; finishCard.classList.add('hidden');
  let html=`<section class="card lesson-header"><h2>${lesson.title}</h2><p class="lesson-subtitle">${lesson.subtitle}</p><p><strong>Multiple choice:</strong> You have two attempts per question. A correct answer finishes the question immediately; after two incorrect attempts, the question is marked complete.</p></section>`;
  lesson.questions.forEach((q,qi)=>{const shuffled=optionOrders[currentLesson][qi]; const done=questionCorrect[currentLesson][qi]||questionAttempts[currentLesson][qi]>=2;
@@ -260,4 +260,13 @@ document.getElementById('submitResultsBtn').addEventListener('click',async()=>{
 });
 document.getElementById('backToLabBtn').addEventListener('click',()=>{currentLesson=0;render();window.scrollTo({top:0,behavior:'smooth'});});
 document.getElementById('resetBtn').addEventListener('click',()=>{if(!confirm('Reset all answers and coding work? This cannot be undone.'))return;currentLesson=0;answers.forEach(a=>a.fill(null));questionCorrect.forEach(a=>a.fill(false));questionAttempts.forEach(a=>a.fill(0));codingChecked.fill(false);codingPassed.fill(false);codeEntries.fill('');optionOrders=makeOptionOrders();localStorage.removeItem(chapter16ProgressKey);localStorage.removeItem(CHAPTER16_SENT_KEY);localStorage.removeItem(chapter16PageKey);render();window.scrollTo({top:0,behavior:'smooth'});});
-render();
+try {
+  render();
+} catch(error) {
+  console.error('Chapter 16 lab rendering failed:',error);
+  currentLesson=0;
+  try { render(); } catch(retryError) {
+    console.error('Chapter 16 retry failed:',retryError);
+    lessonView.innerHTML='<section class="card"><h2>Lessons temporarily unavailable</h2><p>Reload this page. Your saved answers have not been cleared.</p></section>';
+  }
+}
